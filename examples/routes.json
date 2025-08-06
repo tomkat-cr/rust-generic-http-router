@@ -1,0 +1,22 @@
+{
+    "endpoints": [
+        {
+            "method": "POST",
+            "path": "/users",
+            "controller": "users_controller::create",
+            "description": "Create new user"
+        },
+        {
+            "method": "GET",
+            "path": "/users",
+            "controller": "users_controller::get_all",
+            "description": "Get all users"
+        },
+        {
+            "method": "GET",
+            "path": "/users/:id",
+            "controller": "users_controller::get_by_id",
+            "description": "Get user by id"
+        }
+    ]
+}
