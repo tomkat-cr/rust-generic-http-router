@@ -55,10 +55,9 @@ async fn handle_request(
     // Extract the body while preserving the request parts
     let (parts, body) = hyper_req.into_parts();
     let body_bytes = hyper::body::to_bytes(body).await.unwrap();
-    
+
     // Create the request for our router using the original parts
     let req_for_router = Request::from_parts(parts, body_bytes.to_vec());
-
 
     // Use the router to handle the request.
     let response = router.route(req_for_router);
@@ -81,18 +80,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
 
     // 2. Register all your handler implementations.
     //    The string key MUST match the `controller` value in `routes.json`.
-    router.register(
-        "users_controller::get_all",
-        Box::new(GetAllUsersHandler),
-    );
-    router.register(
-        "users_controller::get_by_id",
-        Box::new(GetUserByIdHandler),
-    );
-    router.register(
-        "users_controller::create", 
-        Box::new(CreateUserHandler)
-    );
+    router.register("users_controller::get_all", Box::new(GetAllUsersHandler));
+    router.register("users_controller::get_by_id", Box::new(GetUserByIdHandler));
+    router.register("users_controller::create", Box::new(CreateUserHandler));
 
     // Wrap the router in an Arc to share it safely across threads.
     let shared_router = Arc::new(router);
@@ -114,8 +104,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     println!("Try running:");
     println!("  curl http://{}/users", addr);
     println!("  curl http://{}/users/123", addr);
-    println!("  curl -X POST -d '{{\"name\":\"test\"}}' http://{}/users", addr);
-
+    println!(
+        "  curl -X POST -d '{{\"name\":\"test\"}}' http://{}/users",
+        addr
+    );
 
     // Run the server.
     if let Err(e) = server.await {

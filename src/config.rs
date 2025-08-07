@@ -39,7 +39,7 @@ where
         "CONNECT" => Method::CONNECT,
         "PATCH" => Method::PATCH,
         "TRACE" => Method::TRACE,
-        _ => Method::from_bytes(s.as_bytes()).map_err(serde::de::Error::custom)?
+        _ => Method::from_bytes(s.as_bytes()).map_err(serde::de::Error::custom)?,
     };
     Ok(method)
 }

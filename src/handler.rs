@@ -14,7 +14,7 @@ pub trait HttpHandler {
     /// # Arguments
     ///
     /// * `req` - An `HttpRequest` containing all the details of the request,
-    ///           including headers, body, and parsed path parameters.
+    ///   including headers, body, and parsed path parameters.
     ///
     /// # Returns
     ///

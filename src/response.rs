@@ -1,6 +1,6 @@
 //! Defines a custom `HttpResponse` struct for convenience.
 
-use http::{Response, StatusCode, HeaderMap, HeaderValue};
+use http::{HeaderMap, HeaderValue, Response, StatusCode};
 
 /// A representation of an outgoing HTTP response.
 ///
@@ -33,7 +33,7 @@ impl HttpResponse {
     }
 
     /// Adds a header to the response.
-    pub fn add_header<K>(&mut self, name: K, value: &str) -> &mut Self 
+    pub fn add_header<K>(&mut self, name: K, value: &str) -> &mut Self
     where
         K: http::header::IntoHeaderName,
     {
@@ -48,13 +48,12 @@ impl HttpResponse {
 impl From<HttpResponse> for Response<Vec<u8>> {
     fn from(res: HttpResponse) -> Self {
         let mut response = Response::builder().status(res.status);
-        
+
         // Add all headers to the response
         if let Some(headers) = response.headers_mut() {
             headers.extend(res.headers);
         }
-        
-        response.body(res.body)
-            .unwrap() // This unwrap is safe as we control the inputs.
+
+        response.body(res.body).unwrap() // This unwrap is safe as we control the inputs.
     }
 }

@@ -66,12 +66,13 @@ impl Router {
 
             // Get the tree for the current HTTP method, or create it if it doesn't exist.
             let method_str = method.as_str().to_string();
-            let tree = trees.entry(method).or_insert_with(matchit::Router::new);
+            // let tree = trees.entry(method).or_insert_with(matchit::Router::new);
+            let tree = trees.entry(method).or_default();
 
             // Insert the route into the tree. The path is the key, and the controller
             // name is the value.
             tree.insert(path.clone(), controller.clone())?;
-            eprintln!("Registered route: {} {} -> {}", method_str, path, controller);
+            eprintln!("Registered route: {method_str} {path} -> {controller}");
         }
 
         Ok(Self {
@@ -112,8 +113,11 @@ impl Router {
     pub fn route(&self, req: Request<Vec<u8>>) -> Response<Vec<u8>> {
         let path = req.uri().path();
         let method = req.method();
-        eprintln!("Processing request: {} {}", method, path);
-        eprintln!("Available methods: {:?}", self.trees.keys().collect::<Vec<_>>());
+        eprintln!("Processing request: {method} {path}");
+        eprintln!(
+            "Available methods: {:?}",
+            self.trees.keys().collect::<Vec<_>>()
+        );
 
         // First check if the path exists in any method's tree
         let mut allowed_methods = Vec::new();
@@ -174,7 +178,8 @@ impl Router {
                     // The route is in the JSON, but no handler was registered.
                     // This is a server misconfiguration.
                     None => {
-                        let body = format!("Error: Handler for '{}' is not implemented.", controller_name);
+                        let body =
+                            format!("Error: Handler for '{controller_name}' is not implemented.");
                         HttpResponse::new(StatusCode::NOT_IMPLEMENTED, body.into_bytes()).into()
                     }
                 }
